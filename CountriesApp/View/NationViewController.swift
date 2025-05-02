@@ -11,7 +11,7 @@ class NationViewController: UIViewController {
     
     private let viewModel: NationListViewModel
     private let tableView = UITableView()
-    private let searchBar = UISearchBar()
+    private let searchController = UISearchController(searchResultsController: nil)
 
     init(viewModel: NationListViewModel) {
         self.viewModel = viewModel
@@ -26,24 +26,18 @@ class NationViewController: UIViewController {
         super.viewDidLoad()
         title = "NATIONS"
         view.backgroundColor = .systemBackground
-        setupSearchBar()
+        setupSearchController()
         setupTableView()
         dataBind()
         fetchData()
     }
     
-    func setupSearchBar() {
-        searchBar.placeholder = "Search by name or capital"
-        searchBar.delegate = self
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(searchBar)
-        
-        NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            searchBar.heightAnchor.constraint(equalToConstant: 56)
-        ])
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search by Name or Capital"
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
     
     private func setupTableView() {
@@ -54,7 +48,7 @@ class NationViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -94,9 +88,9 @@ extension NationViewController: UITableViewDataSource {
     }
 }
 
-extension NationViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        viewModel.search(for: searchText)
+extension NationViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        viewModel.search(for: searchController.searchBar.text ?? "")
     }
 }
 
