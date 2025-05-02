@@ -25,3 +25,7 @@ This app follows a structured **MVVM** design:
 
 
 
+## Video Walkthrough
+
+https://github.com/user-attachments/assets/50b56546-b913-499b-ae76-35fd796ac234
+
