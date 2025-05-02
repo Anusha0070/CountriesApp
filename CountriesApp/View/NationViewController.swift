@@ -58,12 +58,12 @@ class NationViewController: UIViewController {
     private func dataBind() {
         
         viewModel.completionHandler = { [weak self] error in
-            if error == nil {
+            if let errorMessage = error {
+                print(errorMessage)
+            } else {
                 DispatchQueue.main.async{
                     self?.tableView.reloadData()
                 }
-            } else {
-                print(error ?? "Error fetching data")
             }
         }
     }
